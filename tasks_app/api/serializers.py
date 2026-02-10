@@ -46,9 +46,23 @@ class TaskSerializer(serializers.ModelSerializer):
     def get_comments_count(self, obj):
         return obj.comments.count()
 
-    def create(self, validated_data):
-        validated_data["created_by"] = self.context["request"].user
-        return super().create(validated_data)
+    def _validate_board_member(self, user, board):
+        """Check that user is a member or creator of the board."""
+        if not board:
+            return
+        is_member = board.created_by == user or board.members.filter(id=user.id).exists()
+        if not is_member:
+            raise serializers.ValidationError(
+                "User is not a member of this board."
+            )
+
+    def validate(self, attrs):
+        board = attrs.get("board") or getattr(self.instance, "board", None)
+        if attrs.get("assignee"):
+            self._validate_board_member(attrs["assignee"], board)
+        if attrs.get("reviewer"):
+            self._validate_board_member(attrs["reviewer"], board)
+        return attrs
 
 
 class CommentSerializer(serializers.ModelSerializer):
