@@ -3,6 +3,17 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 
+class UserDetailsSerializer(serializers.ModelSerializer):
+    """Read-only serializer for user info in nested responses."""
+
+    fullname = serializers.CharField(source="first_name", read_only=True)
+
+    class Meta:
+        model = User
+        fields = ["id", "email", "fullname"]
+        read_only_fields = ["id", "email", "fullname"]
+
+
 class RegistrationSerializer(serializers.Serializer):
     fullname = serializers.CharField(max_length=150)
     email = serializers.EmailField()
