@@ -56,9 +56,8 @@ class EmailCheckView(APIView):
                 {"email": "This query parameter is required."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
+        user = User.objects.filter(email=email).first()
+        if not user:
             return Response(
                 {"detail": "User not found."},
                 status=status.HTTP_404_NOT_FOUND,
