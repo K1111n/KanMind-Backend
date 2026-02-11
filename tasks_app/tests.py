@@ -156,6 +156,17 @@ class TaskCreateTestCase(TaskSetupMixin, APITestCase):
         response = self.client.post("/api/tasks/", data, format="json")
         self.assertEqual(response.status_code, 401)
 
+    def test_create_task_nonexistent_board(self):
+        """Non-existent board returns 404."""
+        data = {
+            "board": 9999,
+            "title": "Fail Task",
+            "status": "to-do",
+            "priority": "low",
+        }
+        response = self.client.post("/api/tasks/", data, format="json")
+        self.assertEqual(response.status_code, 404)
+
 
 class TaskUpdateTestCase(TaskSetupMixin, APITestCase):
     """Tests for PATCH /api/tasks/{id}/"""

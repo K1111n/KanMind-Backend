@@ -39,9 +39,10 @@ class TaskCreateView(generics.CreateAPIView):
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
 
-    def perform_create(self, serializer):
-        board = serializer.validated_data.get("board")
-        user = self.request.user
+    def create(self, request, *args, **kwargs):
+        board_id = request.data.get("board")
+        board = get_object_or_404(Board, id=board_id)
+        user = request.user
         is_member = (
             board.created_by == user
             or board.members.filter(id=user.id).exists()
@@ -49,7 +50,10 @@ class TaskCreateView(generics.CreateAPIView):
         if not is_member:
             from rest_framework.exceptions import PermissionDenied
             raise PermissionDenied("You must be a board member.")
-        serializer.save(created_by=user)
+        return super().create(request, *args, **kwargs)
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
 
 
 class TaskDetailView(generics.GenericAPIView):
