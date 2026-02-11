@@ -12,6 +12,8 @@ A Django REST Framework backend for a Kanban board application. Provides user au
 
 ## Setup
 
+### macOS / Linux
+
 ```bash
 # Clone the repository
 git clone <repository-url>
@@ -37,6 +39,36 @@ python3 manage.py createsuperuser
 # Start the development server
 python3 manage.py runserver
 ```
+
+### Windows
+
+```cmd
+# Clone the repository
+git clone <repository-url>
+cd KanMind-Backend
+
+# Create and activate a virtual environment
+python -m venv .venv
+.venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Create .env file (manually create a file named .env with the following content):
+# SECRET_KEY=your-secret-key-here
+# DEBUG=True
+
+# Run migrations
+python manage.py migrate
+
+# Create a superuser (optional)
+python manage.py createsuperuser
+
+# Start the development server
+python manage.py runserver
+```
+
+The server will be available at `http://127.0.0.1:8000/`.
 
 ## API Endpoints
 
@@ -73,17 +105,18 @@ python3 manage.py runserver
 
 ## Testing
 
+### macOS / Linux
+
 ```bash
-# Run all tests
 python3 manage.py test
-
-# Run tests for a specific app
-python3 manage.py test auth_app
-python3 manage.py test board_app
-python3 manage.py test tasks_app
-
-# Run with verbosity
 python3 manage.py test -v2
+```
+
+### Windows
+
+```cmd
+python manage.py test
+python manage.py test -v2
 ```
 
 ## Project Structure
