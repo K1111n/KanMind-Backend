@@ -18,11 +18,13 @@ class BoardViewSet(ModelViewSet):
     http_method_names = ["get", "post", "patch", "delete"]
 
     def get_queryset(self):
-        """Return boards where user is owner or member."""
-        user = self.request.user
-        return Board.objects.filter(
-            Q(created_by=user) | Q(members=user)
-        ).distinct()
+        """Return boards filtered by action type."""
+        if self.action == "list":
+            user = self.request.user
+            return Board.objects.filter(
+                Q(created_by=user) | Q(members=user)
+            ).distinct()
+        return Board.objects.all()
 
     def get_serializer_class(self):
         """Return different serializer per action."""

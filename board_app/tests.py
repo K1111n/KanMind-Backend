@@ -205,13 +205,13 @@ class BoardDetailTestCase(APITestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_detail_as_outsider(self):
-        """Outsider gets 404."""
+        """Outsider gets 403."""
         token = Token.objects.create(user=self.outsider)
         self.client.credentials(
             HTTP_AUTHORIZATION="Token " + token.key
         )
         response = self.client.get(f"/api/boards/{self.board.id}/")
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_detail_nonexistent_board(self):
         """Non-existent board returns 404."""
